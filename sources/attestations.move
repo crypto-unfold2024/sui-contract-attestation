@@ -3,31 +3,47 @@ module attestations::attestations {
 
     /// Struct to store an attestation
     public struct Attestation has key, store {
-        id: UID,
-        data: vector<vector<u8>>, // Attestation data as UTF-8 encoded strings
-        description: vector<u8>,  // Description of the attestation
+        id: UID,            // Unique identifier for the attestation
+        user: address,      // Address of the user creating the attestation
+        latitude: u64,      // Latitude of the location (multiplied by a scaling factor for precision)
+        longitude: u64,     // Longitude of the location (multiplied by a scaling factor for precision)
+        verified: bool,     // Whether the attestation is verified
     }
 
     /// Create a new attestation
     public fun create_attestation(
-        data: vector<vector<u8>>, // Data for the attestation
-        description: vector<u8>,  // Description of the attestation
+        user: address,       // Address of the user
+        latitude: u64,       // Latitude value
+        longitude: u64,      // Longitude value
+        verified: bool,      // Verification status
         ctx: &mut TxContext
     ): Attestation {
         Attestation {
             id: object::new(ctx),
-            data,
-            description,
+            user,
+            latitude,
+            longitude,
+            verified,
         }
     }
 
-    /// View the data of an attestation
-    public fun get_attestation_data(attestation: &Attestation): vector<vector<u8>> {
-        attestation.data
+    /// Get the user address from an attestation
+    public fun get_user(attestation: &Attestation): address {
+        attestation.user
     }
 
-    /// View the description of an attestation
-    public fun get_attestation_description(attestation: &Attestation): vector<u8> {
-        attestation.description
+    /// Get the latitude from an attestation
+    public fun get_latitude(attestation: &Attestation): u64 {
+        attestation.latitude
+    }
+
+    /// Get the longitude from an attestation
+    public fun get_longitude(attestation: &Attestation): u64 {
+        attestation.longitude
+    }
+
+    /// Check if the attestation is verified
+    public fun is_verified(attestation: &Attestation): bool {
+        attestation.verified
     }
 }
